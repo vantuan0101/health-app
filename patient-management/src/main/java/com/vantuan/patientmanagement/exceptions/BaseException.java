@@ -1,4 +1,4 @@
-package com.vantuan.careplanmanagement.exceptions;
+package com.vantuan.patientmanagement.exceptions;
 
 import com.vantuan.common.exception.GeneralException;
 import lombok.Getter;

@@ -1,7 +1,10 @@
-package com.vantuan.careplanmanagement.model;
+package com.vantuan.patientmanagement.model.entity;
 
-import com.vantuan.careplanmanagement.enums.Gender;
-import com.vantuan.careplanmanagement.enums.Status;
+import com.vantuan.patientmanagement.clinician.model.entity.Clinician;
+import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
+import com.vantuan.patientmanagement.enums.Country;
+import com.vantuan.patientmanagement.enums.Gender;
+import com.vantuan.patientmanagement.enums.Status;
 import jakarta.persistence.*;
 
 import javax.validation.constraints.Max;
@@ -29,7 +32,7 @@ public class Patient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     private String email;
 
@@ -49,6 +52,18 @@ public class Patient {
 
     @NotNull
     private LocalDate birthDate;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_user_address")
+    private UserAddress userAddress;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_clinician")
+    private Clinician clinician;
+
+    @NotNull
+    private Country country;
 
     @NotNull
     @Enumerated(EnumType.STRING)

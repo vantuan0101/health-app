@@ -1,8 +1,11 @@
-package com.vantuan.patientmanagement.model;
+package com.vantuan.patientmanagement.model.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vantuan.common.mapper.StructMapper;
+import com.vantuan.patientmanagement.clinician.model.entity.Clinician;
 import com.vantuan.patientmanagement.common.address.model.data.UserAddressData;
 import com.vantuan.patientmanagement.enums.Gender;
-import com.vantuan.patientmanagement.repo.common.StructMapper;
+import com.vantuan.patientmanagement.model.entity.Patient;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +21,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-import static com.vantuan.patientmanagement.model.Patient.*;
+import static com.vantuan.patientmanagement.model.entity.Patient.*;
 
 @NoArgsConstructor
 public final class PatientData {
@@ -31,12 +34,12 @@ public final class PatientData {
 
         @NotNull
         @Size(max = FIRST_NAME_MAX_SIZE)
-        @Schema(example = "John")
+        @Schema(example = "Van")
         private String firstName;
 
         @NotNull
         @Size(max = LAST_NAME_MAX_SIZE)
-        @Schema(example = "Kowalski")
+        @Schema(example = "Tuan")
         private String lastName;
 
         @NotNull
@@ -75,19 +78,9 @@ public final class PatientData {
     @SuperBuilder(toBuilder = true)
     @NoArgsConstructor
     public static class Create extends Base {
-
-//        @JsonIgnore
-//        private Clinician clinician;
+        @JsonIgnore
+        private Clinician clinician;
 
     }
-
-    @Mapper(builder = @Builder(disableBuilder = true))
-    public abstract static class PatientCreateMapper extends StructMapper<Create, Patient> {
-    }
-
-    @Mapper(builder = @Builder(disableBuilder = true))
-    public abstract static class PatientEditMapper extends StructMapper<Edit, Patient> {
-    }
-
 }
 

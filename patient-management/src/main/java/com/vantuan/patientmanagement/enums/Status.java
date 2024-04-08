@@ -1,4 +1,4 @@
-package com.vantuan.careplanmanagement.enums;
+package com.vantuan.patientmanagement.enums;
 
 public enum Status {
     ACTIVE,
