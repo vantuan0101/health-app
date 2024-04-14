@@ -29,7 +29,7 @@ public class Vital {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_patient")
     private Patient patient;
 
@@ -69,7 +69,6 @@ public class Vital {
     private Short diastolicBloodPressure;
 
     @CreationTimestamp
-    @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Instant createdAt;
 

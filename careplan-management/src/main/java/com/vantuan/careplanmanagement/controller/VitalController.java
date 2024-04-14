@@ -54,7 +54,6 @@ public class VitalController extends BaseController<Vital, VitalCriteria> {
 
     @Transactional
     @PutMapping("/vitals/{patientId}")
-    @ResponseStatus(OK)
     @Operation(summary = "Edit patient vital")
     public ResponseEntity<VitalCriteria> editVital(@Nonnull @PathVariable final Long patientId,
             @Nonnull @Valid @RequestBody final VitalCriteria data,
@@ -64,8 +63,21 @@ public class VitalController extends BaseController<Vital, VitalCriteria> {
         Vital vital = this.vitalService.findById(data.getId());
         if (vital.getPatient().getId() != patient.getId())
             throw new BadRequestException("Edit vital id not match with patient");
-        Vital newVital = this.vitalService.update(vital.getPatient().getId(), data);
+        Vital newData = updateData(vital,data);
+        Vital newVital = this.vitalService.saveByModel(newData);
         return ResponseEntity.ok(this.vitalService.convertToDto(newVital));
+    }
+
+    private Vital updateData(final Vital vital, final VitalCriteria data) {
+        return vital.toBuilder()
+                .currentHeight(data.getCurrentHeight())
+                .currentWeight(data.getCurrentWeight())
+                .systolicBloodPressure(data.getSystolicBloodPressure())
+                .diastolicBloodPressure(data.getDiastolicBloodPressure())
+                .heartRate(data.getHeartRate())
+                .oxygenSaturation(data.getOxygenSaturation())
+                .temperature(data.getTemperature())
+                .build();
     }
 
     @Transactional

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 public class PatientCriteria {
 
-    private Long patientId;
+    private Long id;
 
     private String email;
 

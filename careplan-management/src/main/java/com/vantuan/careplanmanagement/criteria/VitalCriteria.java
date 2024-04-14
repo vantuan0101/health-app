@@ -1,5 +1,6 @@
 package com.vantuan.careplanmanagement.criteria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vantuan.careplanmanagement.model.entity.Patient;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,5 +16,7 @@ public class VitalCriteria {
     private Short oxygenSaturation;
     private Short systolicBloodPressure;
     private Short diastolicBloodPressure;
+
+    @JsonIgnore
     private Patient patient;
 }

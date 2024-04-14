@@ -36,3 +36,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     generate-ddl: true
+
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false

@@ -1,13 +1,17 @@
 package com.vantuan.careplanmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vantuan.careplanmanagement.common.enums.*;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Data
@@ -22,7 +26,7 @@ public class Medication {
     private Long id;
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_patient")
     private Patient patient;
 
@@ -51,5 +55,13 @@ public class Medication {
     private Frequency frequency;
 
     private String notes;
+
+    @CreationTimestamp
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Instant updatedAt;
 
 }
