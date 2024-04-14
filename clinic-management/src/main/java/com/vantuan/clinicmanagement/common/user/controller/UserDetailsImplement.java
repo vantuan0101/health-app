@@ -1,17 +1,15 @@
-package com.vantuan.patientmanagement.common.user.controller;
+package com.vantuan.clinicmanagement.common.user.controller;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import com.vantuan.patientmanagement.common.user.model.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vantuan.clinicmanagement.common.user.model.User;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Collection;
+import java.util.Collections;
 
 @Data
 @AllArgsConstructor
@@ -28,7 +26,6 @@ public class UserDetailsImplement implements UserDetails {
     public Long getId() {
         return user.getId();
     }
-
 
     public String getEmail() {
         return user.getEmail();
@@ -71,5 +68,3 @@ public class UserDetailsImplement implements UserDetails {
     }
 
 }
-
-

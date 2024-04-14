@@ -1,10 +1,9 @@
 package com.vantuan.patientmanagement.model.entity;
 
-import com.vantuan.patientmanagement.clinician.model.entity.Clinician;
 import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
-import com.vantuan.patientmanagement.enums.Country;
-import com.vantuan.patientmanagement.enums.Gender;
-import com.vantuan.patientmanagement.enums.Status;
+import com.vantuan.patientmanagement.common.enums.Country;
+import com.vantuan.patientmanagement.common.enums.Gender;
+import com.vantuan.patientmanagement.common.enums.Status;
 import jakarta.persistence.*;
 
 import javax.validation.constraints.Max;

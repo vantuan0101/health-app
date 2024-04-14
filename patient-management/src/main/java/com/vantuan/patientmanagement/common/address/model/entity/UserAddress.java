@@ -1,14 +1,14 @@
 package com.vantuan.patientmanagement.common.address.model.entity;
 
-import com.vantuan.patientmanagement.clinician.model.entity.Clinician;
-import com.vantuan.patientmanagement.enums.*;
+import com.vantuan.patientmanagement.common.enums.Country;
+import com.vantuan.patientmanagement.common.enums.Region;
+import com.vantuan.patientmanagement.model.entity.Clinician;
 import com.vantuan.patientmanagement.model.entity.Patient;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-
 
 @Data
 @Entity

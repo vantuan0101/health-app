@@ -1,9 +1,8 @@
-package com.vantuan.patientmanagement.common.user.model;
+package com.vantuan.clinicmanagement.common.user.model;
 
-import com.vantuan.patientmanagement.common.enums.UserRole;
+import com.vantuan.clinicmanagement.common.enums.UserRole;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Getter
 @Setter

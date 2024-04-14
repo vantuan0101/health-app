@@ -1,4 +1,4 @@
-package com.vantuan.patientmanagement.config;
+package com.vantuan.patientmanagement.common.user.sercurity;
 
 import com.vantuan.patientmanagement.common.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

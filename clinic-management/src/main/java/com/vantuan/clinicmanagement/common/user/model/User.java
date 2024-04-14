@@ -1,19 +1,16 @@
-package com.vantuan.patientmanagement.common.user.model;
+package com.vantuan.clinicmanagement.common.user.model;
 
-
-import java.time.Instant;
-
-import com.vantuan.patientmanagement.common.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.vantuan.clinicmanagement.common.enums.UserRole;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-
+import java.time.Instant;
 
 @Data
 @Entity

@@ -1,18 +1,14 @@
 package com.vantuan.patientmanagement.model.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.vantuan.common.mapper.StructMapper;
-import com.vantuan.patientmanagement.clinician.model.entity.Clinician;
+import com.vantuan.patientmanagement.model.entity.Clinician;
 import com.vantuan.patientmanagement.common.address.model.data.UserAddressData;
-import com.vantuan.patientmanagement.enums.Gender;
-import com.vantuan.patientmanagement.model.entity.Patient;
+import com.vantuan.patientmanagement.common.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.mapstruct.Builder;
-import org.mapstruct.Mapper;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -83,4 +79,3 @@ public final class PatientData {
 
     }
 }
-

@@ -1,4 +1,4 @@
-package com.vantuan.patientmanagement.common.enums;
+package com.vantuan.clinicmanagement.common.enums;
 
 public enum Gender {
     MALE,

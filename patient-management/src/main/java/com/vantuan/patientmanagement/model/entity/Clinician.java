@@ -1,8 +1,9 @@
-package com.vantuan.patientmanagement.clinician.model.entity;
+package com.vantuan.patientmanagement.model.entity;
 
 import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
-import com.vantuan.patientmanagement.enums.*;
-import com.vantuan.patientmanagement.model.entity.Patient;
+import com.vantuan.patientmanagement.common.enums.Country;
+import com.vantuan.patientmanagement.common.enums.Gender;
+import com.vantuan.patientmanagement.common.enums.Region;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -48,7 +49,6 @@ public class Clinician {
     @JoinColumn(name = "id_user_address")
     private UserAddress userAddress;
 
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private Country countryOfLicense;
@@ -74,4 +74,3 @@ public class Clinician {
         return firstName + SPACE + lastName;
     }
 }
-

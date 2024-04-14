@@ -1,5 +1,16 @@
 server:
   port: 8082
+  jwtSecret: eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4c
+  jwtExpirationMs: 3600000
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        max-age: 10800s #3hours
+        name: WD_SESSION
+    encoding:
+      charset: UTF-8
+      force: true
 
 eureka:
   client:

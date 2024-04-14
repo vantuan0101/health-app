@@ -1,14 +1,25 @@
 server:
   port: 8081
+  jwtSecret: eyJSb2xlIjoiQWRtaW4iLCJJc3N1ZXIiOiJJc3N1ZXIiLCJVc2VybmFtZSI6IkphdmFJblVzZSIsImV4c
+  jwtExpirationMs: 3600000
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        max-age: 10800s #3hours
+        name: WD_SESSION
+    encoding:
+      charset: UTF-8
+      force: true
 
-#eureka:
-#  client:
-#    service-url:
-#      default-zone: http://localhost:8761/eureka
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
 
 spring:
   application:
-    name: patient-management
+    name: auth-management
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver

@@ -22,7 +22,9 @@
 		<module>careplan-management</module>
 		<module>discover-server</module>
 		<module>api-gateway</module>
-    </modules>
+		<module>clinic-management</module>
+		<module>auth-management</module>
+	</modules>
 
 	<properties>
 		<java.version>17</java.version>

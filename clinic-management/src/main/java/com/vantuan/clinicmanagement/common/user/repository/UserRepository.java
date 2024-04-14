@@ -1,8 +1,9 @@
-package com.vantuan.patientmanagement.common.user.repository;
+package com.vantuan.clinicmanagement.common.user.repository;
 
 import com.vantuan.crud.respository.BaseRepository;
-import com.vantuan.patientmanagement.common.user.model.User;
+import com.vantuan.clinicmanagement.common.user.model.User;
 import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
 @Repository

@@ -12,22 +12,32 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: patient-management
+        - id: auth-management
           uri: http://localhost:8081
           predicates:
-            - Path=/api/patient
+            - Path=/api/auth/*
 
         - id: careplan-management
           uri: http://localhost:8082
           predicates:
-            - Path=/api/careplan
-#logging:
-#  level:
-#    root: info
-#    org:
-#      springframework:
-#        cloud:
-#          gateway:
-#            route:
-#              RouteDefinitionLocator: info
-#        trace: info
+            - Path=/api/careplan/*
+
+        - id: clinic-management
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/clinic/*
+
+        - id: patient-management
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/patient/*
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        cloud:
+          gateway:
+            route:
+              RouteDefinitionLocator: info
+        trace: info

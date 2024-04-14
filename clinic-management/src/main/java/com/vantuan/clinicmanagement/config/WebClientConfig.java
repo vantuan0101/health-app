@@ -1,4 +1,4 @@
-package com.vantuan.patientmanagement.config;
+package com.vantuan.clinicmanagement.config;
 
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;

@@ -1,9 +1,8 @@
-package com.vantuan.patientmanagement.config;
-
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+package com.vantuan.clinicmanagement.config;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MapperConfig {

@@ -2,7 +2,8 @@ package com.vantuan.patientmanagement.common.address.read;
 
 import com.vantuan.common.mapper.StructMapper;
 import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
-import com.vantuan.patientmanagement.enums.*;
+import com.vantuan.patientmanagement.common.enums.Country;
+import com.vantuan.patientmanagement.common.enums.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

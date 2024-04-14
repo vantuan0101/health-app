@@ -1,14 +1,15 @@
-package com.vantuan.patientmanagement.common.user.service;
+package com.vantuan.clinicmanagement.common.user.service;
 
-
+import com.vantuan.clinicmanagement.common.user.model.User;
+import com.vantuan.clinicmanagement.common.user.model.UserCriteria;
 import com.vantuan.common.exception.ValidationException;
 import com.vantuan.common.utils.ValidationTypeUtil;
 import com.vantuan.common.utils.exception.ExceptionHelper;
 import com.vantuan.crud.respository.BaseRepository;
 import com.vantuan.crud.service.BaseService;
-import com.vantuan.patientmanagement.common.user.controller.UserDetailsImplement;
-import com.vantuan.patientmanagement.common.user.model.*;
-import com.vantuan.patientmanagement.common.user.repository.UserRepository;
+import com.vantuan.clinicmanagement.common.user.controller.UserDetailsImplement;
+import com.vantuan.clinicmanagement.common.user.repository.UserRepository;
+import jakarta.servlet.http.HttpSession;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import jakarta.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
@@ -76,4 +76,3 @@ public class UserService extends BaseService<User, UserCriteria> implements User
         return userRepository.findByEmail(email);
     }
 }
-

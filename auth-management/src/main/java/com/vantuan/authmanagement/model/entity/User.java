@@ -1,32 +1,27 @@
-package com.vantuan.authmanagement.model;
+package com.vantuan.authmanagement.model.entity;
 
 import java.time.Instant;
 
 import com.vantuan.authmanagement.enums.UserRole;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.*;
+import lombok.*;
 
+@Data
 @Entity
+@NoArgsConstructor
 @Table(name = "users")
-@Getter
-@Setter
-@RequiredArgsConstructor
+@SuperBuilder(toBuilder = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(access = Access.READ_ONLY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     @Email
@@ -34,20 +29,12 @@ public class User {
     @NotBlank
     private String email;
 
-    @Column(length = 100)
-    @JsonProperty(access = Access.WRITE_ONLY)
+    @NotNull
+    @Size(min = 8)
     private String password;
 
-    @Transient
-    @JsonProperty(access = Access.WRITE_ONLY)
-    @NotBlank
-    @Size(min = 8)
-    private String confirmPass;
-
-
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "enum('CLINIC', 'PATIENT', 'ADMIN', 'SUPER_ADMIN', 'USER') DEFAULT 'USER'", nullable = false)
-    @JsonIgnore
+    @NotNull
     private UserRole userRole = UserRole.USER;
 
     @CreationTimestamp
@@ -59,4 +46,3 @@ public class User {
         return String.valueOf(userRole);
     }
 }
-

@@ -1,55 +1,92 @@
 package com.vantuan.patientmanagement.controller;
 
+import com.vantuan.common.exception.EntityNotFoundException;
+import com.vantuan.common.exception.ValidationException;
 import com.vantuan.crud.controller.BaseController;
+import com.vantuan.patientmanagement.common.user.model.User;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;
-import com.vantuan.patientmanagement.model.data.PatientData;
 import com.vantuan.patientmanagement.model.entity.Patient;
-import com.vantuan.patientmanagement.read.PatientDTOs;
 import com.vantuan.patientmanagement.service.PatientService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nonnull;
-import javax.validation.Valid;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import java.util.Collection;
+import java.util.Map;
 
 @Slf4j
 @Tag(name = "Patient")
 @RestController
-@Validated
 @RequestMapping(path = "/patient")
 @RequiredArgsConstructor
-public class PatientController extends BaseController<Patient, Long , PatientCriteria> {
+public class PatientController extends BaseController<Patient, PatientCriteria> {
 
-    private final PatientService patientService;
-    @Transactional
-    @PostMapping()
-    @ResponseStatus(CREATED)
-    @Operation(summary = "Register patient")
-    public ResponseEntity<PatientDTOs.Full> register(@Nonnull @Valid @RequestBody final PatientData.Create data) {
-        log.info("Received register patient request for user : {}");
-        Patient patient = patientService.create(data);
-        log.info("Patient:",patient);
-        log.info("a :",map(patient, PatientDTOs.Full.class));
-        return new ResponseEntity<>(map(patientService.create(data), PatientDTOs.Full.class),
-                CREATED);
+    private PatientService patientService;
+
+    @Autowired
+    public PatientController(PatientService patientService) {
+        this.patientService = patientService;
     }
 
-//    @Transactional
-//    @PutMapping()
-//    @ResponseStatus(OK)
-//    @Operation(summary = "Edit patient")
-//    public ResponseEntity<PatientDTOs.Full> edit(@Nonnull @Valid @RequestBody final PatientData.Edit data) {
-//        log.info("Received edit patient request for user : {}", getCurrentUsername());
-//        return ResponseEntity.ok(map(patientService.edit(data, getCurrentUser()), PatientDTOs.Full.class));
-//    }
+    @Transactional
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientCriteria> findById(@PathVariable Long id) throws EntityNotFoundException {
+        Patient patient = this.patientService.findById(id);
+        PatientCriteria patientCriteria = this.patientService.convertToDto(patient);
+        return ResponseEntity.ok(patientCriteria);
+    }
+
+    @Transactional
+    @GetMapping("filters")
+    public ResponseEntity<Collection<String>> getFiltersController() {
+        return ResponseEntity.ok(getFilters());
+    }
+
+    @Transactional
+    @GetMapping("filters/{filter_name}")
+    public ResponseEntity<Collection<PatientCriteria>> filter(@PathVariable(value = "filter_name") String filterName,
+            @RequestParam Map<String, String> dataQuery) throws ValidationException {
+        return ResponseEntity.ok(this.filters.get(filterName).filterTemplate(dataQuery));
+    }
+
+    @Transactional
+    @PostMapping()
+    public ResponseEntity<PatientCriteria> save(@RequestBody PatientCriteria dto, HttpServletRequest request)
+            throws ValidationException {
+        String email = dto.getEmail();
+        User user = this.patientService.getUserEmail(request, email);
+        if (user != null) {
+            dto.setUser(user);
+        }
+        Patient patient = this.patientService.save(dto);
+        return ResponseEntity.ok(this.patientService.convertToDto(patient));
+    }
+
+    @Transactional
+    @PatchMapping("/{id}")
+    public ResponseEntity<PatientCriteria> update(@PathVariable Long id, @RequestBody PatientCriteria dto)
+            throws ValidationException {
+        Patient patient = this.patientService.update(id, dto);
+        return ResponseEntity.ok(this.patientService.convertToDto(patient));
+    }
+
+    @Transactional
+    @PutMapping("/{id}")
+    public ResponseEntity<PatientCriteria> updateAll(@PathVariable Long id, @RequestBody PatientCriteria dto)
+            throws ValidationException {
+        Patient patient = this.patientService.updateAll(id, dto);
+        return ResponseEntity.ok(this.patientService.convertToDto(patient));
+    }
+
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws EntityNotFoundException {
+        this.patientService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
 }
