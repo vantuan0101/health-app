@@ -22,6 +22,8 @@
 		<module>careplan-management</module>
 		<module>discover-server</module>
 		<module>api-gateway</module>
+		<module>clinic-management</module>
+		<module>auth-management</module>
 	</modules>
 
 	<properties>

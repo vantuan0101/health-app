@@ -1,0 +1,9 @@
+package com.vantuan.careplanmanagement.repository;
+
+import com.vantuan.careplanmanagement.model.entity.Allergy;
+import com.vantuan.crud.respository.BaseRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface AllergyRepository extends BaseRepository<Allergy> {
+}

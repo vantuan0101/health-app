@@ -3,8 +3,18 @@ server:
 
 eureka:
   client:
+    fetch-registry: true
+    register-with-eureka: true
     service-url:
       default-zone: http://localhost:8761/eureka
+
+# Configuring exposure of routes find in eureka
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "routes"
 
 spring:
   application:
@@ -12,22 +22,33 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: patient-management
+        - id: auth-management
           uri: http://localhost:8081
           predicates:
-            - Path=/api/patient
+            - Path=/api/auth/**
 
         - id: careplan-management
           uri: http://localhost:8082
           predicates:
-            - Path=/api/careplan
-#logging:
-#  level:
-#    root: info
-#    org:
-#      springframework:
-#        cloud:
-#          gateway:
-#            route:
-#              RouteDefinitionLocator: info
-#        trace: info
+            - Path=/api/careplan/**
+
+        - id: clinic-management
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/clinician/**
+
+        - id: patient-management
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/patient/**
+
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        cloud:
+          gateway:
+            route:
+              RouteDefinitionLocator: info
+        trace: info
