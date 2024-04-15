@@ -64,8 +64,18 @@ public class PhysicalActivityController extends BaseController<PhysicalActivity,
         PhysicalActivity physicalActivity = this.physicalActivityService.findById(data.getId());
         if (physicalActivity.getPatient().getId() != patient.getId())
             throw new BadRequestException("Edit physical activity id not match with patient");
-        PhysicalActivity newData = this.physicalActivityService.update(physicalActivity.getPatient().getId(), data);
-        return ResponseEntity.ok(this.physicalActivityService.convertToDto(newData));
+        PhysicalActivity newData = updateData(physicalActivity, data);
+        PhysicalActivity newPhysical = this.physicalActivityService.saveByModel(newData);
+        return ResponseEntity.ok(this.physicalActivityService.convertToDto(newPhysical));
+    }
+
+    private PhysicalActivity updateData(final PhysicalActivity existing, final PhysicalActivityCriteria data) {
+        return existing.toBuilder()
+                .daysOfModerateActivity(data.getDaysOfModerateActivity())
+                .minutesOfModerateActivity(data.getMinutesOfModerateActivity())
+                .daysOfVigorousActivity(data.getDaysOfVigorousActivity())
+                .minutesOfVigorousActivity(data.getMinutesOfVigorousActivity())
+                .build();
     }
 
     @Transactional

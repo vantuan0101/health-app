@@ -1,5 +1,6 @@
 package com.vantuan.careplanmanagement.criteria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vantuan.careplanmanagement.common.enums.*;
 import com.vantuan.careplanmanagement.model.entity.Patient;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -42,5 +43,7 @@ public class MedicationCriteria {
     private String notes;
 
     private Long id;
+
+    @JsonIgnore
     private Patient patient;
 }

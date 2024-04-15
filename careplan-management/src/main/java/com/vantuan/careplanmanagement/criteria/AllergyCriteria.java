@@ -1,5 +1,6 @@
 package com.vantuan.careplanmanagement.criteria;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vantuan.careplanmanagement.common.enums.Reaction;
 import com.vantuan.careplanmanagement.common.enums.Severity;
 import com.vantuan.careplanmanagement.model.entity.Patient;
@@ -20,6 +21,7 @@ import static com.vantuan.careplanmanagement.model.entity.Allergy.MIN_YEARS;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 public class AllergyCriteria {
+    @JsonIgnore
     private Patient patient;
 
     @NotNull

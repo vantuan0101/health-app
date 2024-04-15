@@ -58,8 +58,20 @@ public class AllergyController extends BaseController<Allergy, AllergyCriteria> 
         Allergy allergy = this.allergyService.findById(data.getId());
         if (allergy.getPatient().getId() != patient.getId())
             throw new BadRequestException("Edit patient allergy id not match with patient");
-        Allergy newData = this.allergyService.update(allergy.getPatient().getId(), data);
-        return ResponseEntity.ok(this.allergyService.convertToDto(newData));
+        Allergy newData = updateData(allergy, data);
+        Allergy newAllergy = this.allergyService.saveByModel(newData);
+        return ResponseEntity.ok(this.allergyService.convertToDto(newAllergy));
+    }
+
+    private Allergy updateData(final Allergy allergy, final AllergyCriteria data) {
+        return allergy.toBuilder()
+                .substance(data.getSubstance())
+                .reaction(data.getReaction())
+                .onset(data.getOnset())
+                .severity(data.getSeverity())
+                .medication(data.getMedication())
+                .notes(data.getNotes())
+                .build();
     }
 
     @Transactional

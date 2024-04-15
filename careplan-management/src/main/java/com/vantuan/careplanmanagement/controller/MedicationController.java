@@ -64,8 +64,22 @@ public class MedicationController extends BaseController<Medication, MedicationC
         Medication medication = this.medicationService.findById(data.getId());
         if (medication.getPatient().getId() != patient.getId())
             throw new BadRequestException("Edit patient medication id not match with patient");
-        Medication newData = this.medicationService.update(medication.getPatient().getId(), data);
-        return ResponseEntity.ok(this.medicationService.convertToDto(newData));
+        Medication newData = updateData(medication, data);
+        Medication newMedication = this.medicationService.saveByModel(newData);
+        return ResponseEntity.ok(this.medicationService.convertToDto(newMedication));
+    }
+
+    private Medication updateData(final Medication medication, final MedicationCriteria data) {
+        return medication.toBuilder()
+                .medicineName(data.getMedicineName())
+                .quantity(data.getQuantity())
+                .unit(data.getUnit())
+                .startDate(data.getStartDate())
+                .estimatedEndDate(data.getEstimatedEndDate())
+                .doseUnit(data.getDoseUnit())
+                .frequency(data.getFrequency())
+                .notes(data.getNotes())
+                .build();
     }
 
     @Transactional
