@@ -3,7 +3,7 @@ package com.vantuan.patientmanagement.common.user.model;
 import java.time.Instant;
 
 import com.vantuan.patientmanagement.common.enums.UserRole;
-import lombok.NoArgsConstructor;
+
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -19,9 +19,20 @@ import lombok.*;
 @Table(name = "users")
 @SuperBuilder(toBuilder = true)
 public class User {
+    public static final int FIRST_NAME_MAX_SIZE = 150;
+    public static final int LAST_NAME_MAX_SIZE = 150;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull
+    @Size(max = FIRST_NAME_MAX_SIZE)
+    private String firstName;
+
+    @NotNull
+    @Size(max = LAST_NAME_MAX_SIZE)
+    private String lastName;
 
     @Column(nullable = false, unique = true)
     @Email

@@ -37,9 +37,8 @@ public class ClinicController extends BaseController<Clinician, ClinicianCriteri
     @GetMapping("/{id}")
     public ResponseEntity<ClinicianCriteria> findById(@PathVariable Long id) throws EntityNotFoundException {
         Clinician clinician = this.clinicService.findById(id);
-        this.clinicService.findById(id);
-        ClinicianCriteria patientCriteria = this.clinicService.convertToDto(clinician);
-        return ResponseEntity.ok(patientCriteria);
+        ClinicianCriteria clinicianCriteria = this.clinicService.convertToDto(clinician);
+        return ResponseEntity.ok(clinicianCriteria);
     }
 
     @Transactional
@@ -59,8 +58,8 @@ public class ClinicController extends BaseController<Clinician, ClinicianCriteri
     @PostMapping()
     public ResponseEntity<ClinicianCriteria> save(@RequestBody ClinicianCriteria dto, HttpServletRequest request)
             throws ValidationException {
-        String email = dto.getEmail();
-        User user = this.clinicService.getUserEmail(request, email);
+        Long userId = dto.getUserId();
+        User user = this.clinicService.getUser(request, userId);
         if (user != null) {
             dto.setUser(user);
         }
@@ -72,7 +71,7 @@ public class ClinicController extends BaseController<Clinician, ClinicianCriteri
     @PatchMapping("/{id}")
     public ResponseEntity<ClinicianCriteria> update(@PathVariable Long id, @RequestBody ClinicianCriteria dto)
             throws ValidationException {
-        Clinician clinician = this.clinicService.update(id, dto);
+        Clinician clinician = this.clinicService.updateAll(id, dto);
         return ResponseEntity.ok(this.clinicService.convertToDto(clinician));
     }
 
@@ -80,7 +79,7 @@ public class ClinicController extends BaseController<Clinician, ClinicianCriteri
     @PutMapping("/{id}")
     public ResponseEntity<ClinicianCriteria> updateAll(@PathVariable Long id, @RequestBody ClinicianCriteria dto)
             throws ValidationException {
-        Clinician clinician = this.clinicService.updateAll(id, dto);
+        Clinician clinician = this.clinicService.update(id, dto);
         return ResponseEntity.ok(this.clinicService.convertToDto(clinician));
     }
 

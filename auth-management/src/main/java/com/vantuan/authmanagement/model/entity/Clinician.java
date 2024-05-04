@@ -1,36 +1,41 @@
-package com.vantuan.clinicmanagement.model.entity;
+package com.vantuan.authmanagement.model.entity;
 
-import com.vantuan.clinicmanagement.common.enums.*;
+import com.vantuan.authmanagement.common.enums.*;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
 @Data
 @Entity
 @NoArgsConstructor
-@Table(name = "patients")
+@Table(name = "clinicians")
 @SuperBuilder(toBuilder = true)
-public class Patient {
+public class Clinician {
+
     public static final int FIRST_NAME_MAX_SIZE = 150;
     public static final int LAST_NAME_MAX_SIZE = 150;
-    public static final int HEIGHT_MIN = 0;
-    public static final int WEIGHT_MIN = 0;
-    public static final int WEIGHT_MAX = 300;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
+    @NotNull
+    @Builder.Default
+    private Boolean isVerified = false;
+
+    @NotNull
+    @Builder.Default
+    private Boolean active = false;
 
     @NotNull
     @Size(max = FIRST_NAME_MAX_SIZE)
@@ -39,15 +44,6 @@ public class Patient {
     @NotNull
     @Size(max = LAST_NAME_MAX_SIZE)
     private String lastName;
-
-    private String photo;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
-    @NotNull
-    private LocalDate birthDate;
 
     private String address;
 
@@ -61,23 +57,25 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private Region region;
 
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_clinician")
-    private Clinician clinician;
+    @Enumerated(EnumType.STRING)
+    private Country countryOfLicense;
+
+    @Enumerated(EnumType.STRING)
+    private Region stateOfPrimaryLicense;
+
+    private String licenseNumber;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     @NotNull
-    @Min(HEIGHT_MIN)
-    private Short height;
+    private LocalDate birthDate;
 
-    @NotNull
-    @Min(WEIGHT_MIN)
-    @Max(WEIGHT_MAX)
-    private Float weight;
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user")
+    private User user;
 
     public String getFullName() {
         return firstName + SPACE + lastName;

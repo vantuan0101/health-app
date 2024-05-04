@@ -5,6 +5,7 @@ import com.vantuan.common.exception.ValidationException;
 import com.vantuan.crud.controller.BaseController;
 import com.vantuan.patientmanagement.common.user.model.User;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;
+import com.vantuan.patientmanagement.model.entity.Clinician;
 import com.vantuan.patientmanagement.model.entity.Patient;
 import com.vantuan.patientmanagement.service.PatientService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -58,10 +59,10 @@ public class PatientController extends BaseController<Patient, PatientCriteria> 
     @PostMapping()
     public ResponseEntity<PatientCriteria> save(@RequestBody PatientCriteria dto, HttpServletRequest request)
             throws ValidationException {
-        String email = dto.getEmail();
-        User user = this.patientService.getUserEmail(request, email);
-        if (user != null) {
-            dto.setUser(user);
+        Long clinicianId = dto.getClinicianId();
+        Clinician clinician = this.patientService.getClinician(request, clinicianId);
+        if (clinician != null) {
+            dto.setClinician(clinician);
         }
         Patient patient = this.patientService.save(dto);
         return ResponseEntity.ok(this.patientService.convertToDto(patient));

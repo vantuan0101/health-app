@@ -26,20 +26,19 @@ public class UserController extends BaseController<User, UserCriteria> {
         this.userService = userService;
     }
 
-    @Transactional
-    @GetMapping()
-    public ResponseEntity<UserCriteria> findByCriteria(@RequestBody String email) throws EntityNotFoundException {
-        User user = this.userService.findByEmail(email).orElseThrow();
-        UserCriteria patientCriteria = this.userService.convertToDto(user);
-        return ResponseEntity.ok(patientCriteria);
-    }
+    // @Transactional
+    // @GetMapping()
+    // public ResponseEntity<User> findByCriteria(@RequestBody UserCriteria dto)
+    // throws EntityNotFoundException {
+    // User user = this.userService.findByEmail(dto.getEmail()).orElseThrow();
+    // return ResponseEntity.ok(user);
+    // }
 
     @Transactional
     @GetMapping("/{id}")
-    public ResponseEntity<UserCriteria> findById(@PathVariable Long id) throws EntityNotFoundException {
+    public ResponseEntity<User> findById(@PathVariable Long id) throws EntityNotFoundException {
         User user = this.userService.findById(id);
-        UserCriteria patientCriteria = this.userService.convertToDto(user);
-        return ResponseEntity.ok(patientCriteria);
+        return ResponseEntity.ok(user);
     }
 
     @Transactional
@@ -61,8 +60,8 @@ public class UserController extends BaseController<User, UserCriteria> {
     @PutMapping("/{id}")
     public ResponseEntity<UserCriteria> updateAll(@PathVariable Long id, @RequestBody UserCriteria dto)
             throws ValidationException {
-        User patient = this.userService.updateAll(id, dto);
-        return ResponseEntity.ok(this.userService.convertToDto(patient));
+        User user = this.userService.updateAll(id, dto);
+        return ResponseEntity.ok(this.userService.convertToDto(user));
     }
 
     @Transactional

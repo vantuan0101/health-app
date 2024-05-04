@@ -91,6 +91,8 @@ public class AuthController extends BaseController<User, UserCriteria> {
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail(),
+                    userDetails.getFirstName(),
+                    userDetails.getLastName(),
                     roles);
             return response;
         } catch (Exception ex) {

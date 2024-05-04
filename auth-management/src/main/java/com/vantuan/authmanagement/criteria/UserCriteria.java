@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public class UserCriteria {
     private String email;
+    private String firstName;
+    private String lastName;
     private String password;
     private String confirmPass;
     private UserRole userRole;

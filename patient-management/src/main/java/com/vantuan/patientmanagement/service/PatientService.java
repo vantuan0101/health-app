@@ -7,6 +7,7 @@ import com.vantuan.crud.respository.BaseRepository;
 import com.vantuan.crud.service.BaseService;
 import com.vantuan.patientmanagement.common.user.model.User;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;
+import com.vantuan.patientmanagement.model.entity.Clinician;
 import com.vantuan.patientmanagement.model.entity.Patient;
 import com.vantuan.patientmanagement.repository.PatientRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,15 +47,15 @@ public class PatientService extends BaseService<Patient, PatientCriteria> {
         }
     }
 
-    public User getUserEmail(HttpServletRequest request, @Nonnull String email) {
+    public Clinician getClinician(HttpServletRequest request, @Nonnull Long id) {
         String headerAuth = request.getHeader("Authorization");
-        User user = this.webClientBuilder.build().get()
-                .uri("http://auth-management/api/users")
-                .attribute("email", email)
+        Clinician clinician = this.webClientBuilder.build().get()
+                .uri("http://clinician-management/api/users")
+                .attribute("id", id)
                 .header("Authorization", headerAuth)
                 .retrieve()
-                .bodyToMono(User.class)
+                .bodyToMono(Clinician.class)
                 .block();
-        return user;
+        return clinician;
     }
 }

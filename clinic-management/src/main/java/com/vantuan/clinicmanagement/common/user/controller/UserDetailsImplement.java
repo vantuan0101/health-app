@@ -31,6 +31,14 @@ public class UserDetailsImplement implements UserDetails {
         return user.getEmail();
     }
 
+    public String getFirstName() {
+        return user.getFirstName();
+    }
+
+    public String getLastName() {
+        return user.getLastName();
+    }
+
     @Override
     @JsonIgnore
     public String getPassword() {

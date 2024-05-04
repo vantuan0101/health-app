@@ -1,8 +1,8 @@
 package com.vantuan.patientmanagement.criteria;
 
-import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
 import com.vantuan.patientmanagement.common.enums.Country;
-import com.vantuan.patientmanagement.common.user.model.User;
+import com.vantuan.patientmanagement.common.enums.Region;
+import com.vantuan.patientmanagement.model.entity.Clinician;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,13 +24,21 @@ public class PatientCriteria {
 
     private LocalDate birthDate;
 
-    private UserAddress address;
+    private String address;
+
+    private String city;
 
     private Country country;
+
+    private String zipCode;
+
+    private Region region;
 
     private Short height;
 
     private Float weight;
 
-    private User user;
+    private Long clinicianId;
+
+    private Clinician clinician;
 }

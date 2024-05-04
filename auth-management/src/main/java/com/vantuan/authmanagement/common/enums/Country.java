@@ -1,4 +1,4 @@
-package com.vantuan.clinicmanagement.common.enums;
+package com.vantuan.authmanagement.common.enums;
 
 public enum Country {
     VIET_NAM,

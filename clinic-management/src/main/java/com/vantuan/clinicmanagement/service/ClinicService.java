@@ -47,11 +47,10 @@ public class ClinicService extends BaseService<Clinician, ClinicianCriteria> {
         }
     }
 
-    public User getUserEmail(HttpServletRequest request, @Nonnull String email) {
+    public User getUser(HttpServletRequest request, @Nonnull Long id) {
         String headerAuth = request.getHeader("Authorization");
         User user = this.webClientBuilder.build().get()
-                .uri("http://auth-management/api/users")
-                .attribute("email", email)
+                .uri("http://auth-management/api/users",uriBuilder->uriBuilder.path("/{id}").build(id))
                 .header("Authorization", headerAuth)
                 .retrieve()
                 .bodyToMono(User.class)

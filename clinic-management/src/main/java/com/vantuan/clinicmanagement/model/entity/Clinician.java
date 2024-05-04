@@ -1,7 +1,7 @@
 package com.vantuan.clinicmanagement.model.entity;
 
-import com.vantuan.clinicmanagement.common.address.model.entity.UserAddress;
 import com.vantuan.clinicmanagement.common.enums.*;
+import com.vantuan.clinicmanagement.common.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -43,19 +43,24 @@ public class Clinician {
     @Size(max = LAST_NAME_MAX_SIZE)
     private String lastName;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id_user_address")
-    private UserAddress userAddress;
+    private String address;
 
-    @NotNull
+    private String city;
+
+    @Enumerated(EnumType.STRING)
+    private Country country;
+
+    private String zipCode;
+
+    @Enumerated(EnumType.STRING)
+    private Region region;
+
     @Enumerated(EnumType.STRING)
     private Country countryOfLicense;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Region stateOfPrimaryLicense;
 
-    @NotNull
     private String licenseNumber;
 
     @NotNull
@@ -67,6 +72,11 @@ public class Clinician {
 
     @OneToMany(mappedBy = "clinician")
     private List<Patient> patients;
+
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user")
+    private User user;
 
     public String getFullName() {
         return firstName + SPACE + lastName;
