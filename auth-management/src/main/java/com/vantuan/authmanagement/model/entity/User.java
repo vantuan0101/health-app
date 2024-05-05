@@ -1,18 +1,17 @@
 package com.vantuan.authmanagement.model.entity;
 
-import java.time.Instant;
-import java.util.List;
-
-import com.vantuan.authmanagement.enums.UserRole;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.vantuan.authmanagement.common.enums.UserRole;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.Instant;
 
 @Data
 @Entity
@@ -48,9 +47,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     @NotNull
     private UserRole userRole = UserRole.USER;
-
-    @OneToMany(mappedBy = "user")
-    private List<Clinician> clinicians;
 
     @CreationTimestamp
     @Column(nullable = false)

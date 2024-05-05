@@ -1,12 +1,11 @@
 package com.vantuan.careplanmanagement.controller;
 
 import com.vantuan.careplanmanagement.criteria.PhysicalActivityCriteria;
-import com.vantuan.careplanmanagement.model.entity.Patient;
+import com.vantuan.careplanmanagement.model.data.PhysicalActivityData;
 import com.vantuan.careplanmanagement.model.entity.PhysicalActivity;
+import com.vantuan.careplanmanagement.read.PhysicalActivityDTOs;
 import com.vantuan.careplanmanagement.service.PhysicalActivityService;
-import com.vantuan.common.exception.BadRequestException;
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,84 +14,77 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Patient physical activity")
 @RestController
-@RequestMapping("/careplan")
+@RequestMapping("/careplan/physicalActivity")
 @RequiredArgsConstructor
-public class PhysicalActivityController extends BaseController<PhysicalActivity, PhysicalActivityCriteria> {
+public class PhysicalActivityController extends BaseController<PhysicalActivity, Long, PhysicalActivityCriteria> {
 
-    private PhysicalActivityService physicalActivityService;
+    private final MappingUtil mappingUtil;
+    private final PhysicalActivityService physicalActivityService;
 
-    @Autowired
-    public void setPhysicalActivityService(PhysicalActivityService physicalActivityService) {
-        this.physicalActivityService = physicalActivityService;
+    @Transactional
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create physical activity")
+    public ResponseEntity<PhysicalActivityDTOs.Full> create(
+            @Nonnull @Valid @RequestBody final PhysicalActivityData.Create data, HttpServletRequest request) {
+        log.info("Received register physical activity request for user : {}", data.getPatientId());
+        return new ResponseEntity<>(
+                mappingUtil.map(physicalActivityService.create(data, request), PhysicalActivityDTOs.Full.class),
+                HttpStatus.CREATED);
     }
 
     @Transactional
-    @PostMapping("/physicalActivity")
-    @ResponseStatus(CREATED)
-    @Operation(summary = "Add patient physical activity")
-    public ResponseEntity<PhysicalActivityCriteria> addPhysicalActivity(@Nonnull @PathVariable Long patientId,
-            @Nonnull @RequestBody PhysicalActivityCriteria data, HttpServletRequest request)
-            throws ValidationException {
-        log.info("Received add patient physical activity request for user : {}");
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit physical activity")
+    public ResponseEntity<PhysicalActivityDTOs.Full> edit(
+            @PathVariable final Long id,
+            @Nonnull @Valid @RequestBody final PhysicalActivityData.Edit data) {
+        log.info("Received edit physical activity request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(physicalActivityService.edit(data, id), PhysicalActivityDTOs.Full.class));
+    }
 
-        Patient patient = this.physicalActivityService.getPatient(request, patientId);
-        data.setPatient(patient);
-        PhysicalActivity newData = this.physicalActivityService.save(data);
-        return ResponseEntity.ok(this.physicalActivityService.convertToDto(newData));
+    @Transactional(readOnly = true)
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all physical activity information")
+    public ResponseEntity<List<PhysicalActivityDTOs.Full>> getAll() {
+        log.info("Received Get all medications information request for user : {}");
+        return ResponseEntity
+                .ok(mappingUtil.mapList(physicalActivityService.getAll(), PhysicalActivityDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get physical activity information")
+    public ResponseEntity<PhysicalActivityDTOs.Full> get(
+            @PathVariable final Long id) {
+        log.info("Received get physical activity information request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(physicalActivityService.get(id), PhysicalActivityDTOs.Full.class));
     }
 
     @Transactional
-    @PutMapping("/physicalActivity")
-    @ResponseStatus(OK)
-    @Operation(summary = "Edit patient physical activity")
-    public ResponseEntity<PhysicalActivityCriteria> editPhysicalActivity(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final PhysicalActivityCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException, ValidationException {
-        log.info("Received edit patient physical activity request for user : {}");
-        Patient patient = this.physicalActivityService.getPatient(request, patientId);
-        PhysicalActivity physicalActivity = this.physicalActivityService.findById(data.getId());
-        if (physicalActivity.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Edit physical activity id not match with patient");
-        PhysicalActivity newData = updateData(physicalActivity, data);
-        PhysicalActivity newPhysical = this.physicalActivityService.saveByModel(newData);
-        return ResponseEntity.ok(this.physicalActivityService.convertToDto(newPhysical));
-    }
-
-    private PhysicalActivity updateData(final PhysicalActivity existing, final PhysicalActivityCriteria data) {
-        return existing.toBuilder()
-                .daysOfModerateActivity(data.getDaysOfModerateActivity())
-                .minutesOfModerateActivity(data.getMinutesOfModerateActivity())
-                .daysOfVigorousActivity(data.getDaysOfVigorousActivity())
-                .minutesOfVigorousActivity(data.getMinutesOfVigorousActivity())
-                .build();
-    }
-
-    @Transactional
-    @DeleteMapping("/physicalActivity")
-    @Operation(summary = "Remove physical activity from patient")
-    public ResponseEntity<String> removeVital(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final PhysicalActivityCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException {
-        log.info("Received remove physical activity from patient request for user : {}");
-        Patient patient = this.physicalActivityService.getPatient(request, patientId);
-        PhysicalActivity physicalActivity = this.physicalActivityService.findById(data.getId());
-        if (physicalActivity.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Remove physical activity id not match with patient");
-
-        Long physicalActivityId = physicalActivity.getId();
-        this.physicalActivityService.deleteById(physicalActivityId);
-        return ResponseEntity.ok("Delete Ok");
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete physical activity")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long id) {
+        log.info("Received delete physical activity information request for user : {}", id);
+        physicalActivityService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 }

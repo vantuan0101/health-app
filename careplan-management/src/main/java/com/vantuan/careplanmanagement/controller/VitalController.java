@@ -1,100 +1,88 @@
 package com.vantuan.careplanmanagement.controller;
 
 import com.vantuan.careplanmanagement.criteria.VitalCriteria;
-import com.vantuan.careplanmanagement.model.entity.Patient;
+import com.vantuan.careplanmanagement.model.data.VitalData;
 import com.vantuan.careplanmanagement.model.entity.Vital;
+import com.vantuan.careplanmanagement.read.VitalDTOs;
 import com.vantuan.careplanmanagement.service.VitalService;
-import com.vantuan.common.exception.BadRequestException;
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nonnull;
-import javax.validation.Valid;
-
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Patient vitals")
 @RestController
-@RequestMapping("/careplan")
+@RequestMapping("/careplan/vitals")
 @RequiredArgsConstructor
-public class VitalController extends BaseController<Vital, VitalCriteria> {
+public class VitalController extends BaseController<Vital, Long, VitalCriteria> {
 
-    private VitalService vitalService;
+    private final MappingUtil mappingUtil;
+    private final VitalService vitalService;
 
-    @Autowired
-    public void setVitalService(VitalService vitalService) {
-        this.vitalService = vitalService;
+    @Transactional
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create vitals")
+    public ResponseEntity<VitalDTOs.Full> create(@Nonnull @Valid @RequestBody final VitalData.Create data,
+            HttpServletRequest request) {
+        log.info("Received register vitals request for user : {}", data.getPatientId());
+        return new ResponseEntity<>(mappingUtil.map(vitalService.create(data, request), VitalDTOs.Full.class),
+                HttpStatus.CREATED);
     }
 
     @Transactional
-    @PostMapping("/vitals/{patientId}")
-    @ResponseStatus(CREATED)
-    @Operation(summary = "Add vital to patient")
-    public ResponseEntity<VitalCriteria> addVital(@Nonnull @PathVariable Long patientId,
-            @Nonnull @RequestBody VitalCriteria data, HttpServletRequest request) throws ValidationException {
-        log.info("Received add vital to patient request for user : {}");
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit vitals")
+    public ResponseEntity<VitalDTOs.Full> edit(
+            @PathVariable final Long id,
+            @Nonnull @Valid @RequestBody final VitalData.Edit data) {
+        log.info("Received edit vitals request for user : {}", id);
+        return ResponseEntity.ok(mappingUtil.map(vitalService.edit(data, id), VitalDTOs.Full.class));
+    }
 
-        Patient patient = this.vitalService.getPatient(request, patientId);
-        data.setPatient(patient);
-        Vital newData = this.vitalService.save(data);
-        return ResponseEntity.ok(this.vitalService.convertToDto(newData));
+    @Transactional(readOnly = true)
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all vitals information")
+    public ResponseEntity<List<VitalDTOs.Full>> getAll() {
+        log.info("Received Get all vitals information request for user : {}");
+        return ResponseEntity
+                .ok(mappingUtil.mapList(vitalService.getAll(), VitalDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get vitals information")
+    public ResponseEntity<VitalDTOs.Full> get(
+            @PathVariable final Long id) {
+        log.info("Received get vitals information request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(vitalService.get(id), VitalDTOs.Full.class));
     }
 
     @Transactional
-    @PutMapping("/vitals/{patientId}")
-    @Operation(summary = "Edit patient vital")
-    public ResponseEntity<VitalCriteria> editVital(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final VitalCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException, ValidationException {
-        log.info("Received edit patient vital request for user : {}");
-        Patient patient = this.vitalService.getPatient(request, patientId);
-        Vital vital = this.vitalService.findById(data.getId());
-        if (vital.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Edit vital id not match with patient");
-        Vital newData = updateData(vital,data);
-        Vital newVital = this.vitalService.saveByModel(newData);
-        return ResponseEntity.ok(this.vitalService.convertToDto(newVital));
-    }
-
-    private Vital updateData(final Vital vital, final VitalCriteria data) {
-        return vital.toBuilder()
-                .currentHeight(data.getCurrentHeight())
-                .currentWeight(data.getCurrentWeight())
-                .systolicBloodPressure(data.getSystolicBloodPressure())
-                .diastolicBloodPressure(data.getDiastolicBloodPressure())
-                .heartRate(data.getHeartRate())
-                .oxygenSaturation(data.getOxygenSaturation())
-                .temperature(data.getTemperature())
-                .build();
-    }
-
-    @Transactional
-    @DeleteMapping("/vitals/{patientId}")
-    @Operation(summary = "Remove vital from patient")
-    public ResponseEntity<String> removeVital(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final VitalCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException {
-        log.info("Received remove vital from patient request for user : {}");
-        Patient patient = this.vitalService.getPatient(request, patientId);
-        Vital vital = this.vitalService.findById(data.getId());
-        if (vital.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Remove vital id not match with patient");
-
-        Long vitalId = vital.getId();
-        this.vitalService.deleteById(vitalId);
-        return ResponseEntity.ok("Delete Ok");
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete vitals")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long id) {
+        log.info("Received delete vitals information request for user : {}", id);
+        vitalService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -1,15 +1,19 @@
 package com.vantuan.clinicmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vantuan.clinicmanagement.common.enums.*;
-import com.vantuan.clinicmanagement.common.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
@@ -43,18 +47,6 @@ public class Clinician {
     @Size(max = LAST_NAME_MAX_SIZE)
     private String lastName;
 
-    private String address;
-
-    private String city;
-
-    @Enumerated(EnumType.STRING)
-    private Country country;
-
-    private String zipCode;
-
-    @Enumerated(EnumType.STRING)
-    private Region region;
-
     @Enumerated(EnumType.STRING)
     private Country countryOfLicense;
 
@@ -70,12 +62,23 @@ public class Clinician {
     @NotNull
     private LocalDate birthDate;
 
+    private String address;
+
+    private String city;
+
+    private Country country;
+
+    private String zipCode;
+
+    private Region region;
+
     @OneToMany(mappedBy = "clinician")
     private List<Patient> patients;
 
-    @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
     private User user;
 
     public String getFullName() {

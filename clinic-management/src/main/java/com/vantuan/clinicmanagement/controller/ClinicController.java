@@ -1,92 +1,88 @@
 package com.vantuan.clinicmanagement.controller;
 
-import com.vantuan.clinicmanagement.common.user.model.User;
 import com.vantuan.clinicmanagement.criteria.ClinicianCriteria;
+import com.vantuan.clinicmanagement.model.data.ClinicianData;
 import com.vantuan.clinicmanagement.model.entity.Clinician;
-import com.vantuan.clinicmanagement.service.ClinicService;
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.clinicmanagement.read.ClinicianDTOs;
+import com.vantuan.clinicmanagement.service.ClinicianService;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
+
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Clinician")
 @RestController
 @RequestMapping(path = "/clinician")
 @RequiredArgsConstructor
-public class ClinicController extends BaseController<Clinician, ClinicianCriteria> {
+public class ClinicController extends BaseController<Clinician, Long, ClinicianCriteria> {
 
-    private ClinicService clinicService;
-
-    @Autowired
-    public ClinicController(ClinicService clinicService) {
-        this.clinicService = clinicService;
-    }
-
-    @Transactional
-    @GetMapping("/{id}")
-    public ResponseEntity<ClinicianCriteria> findById(@PathVariable Long id) throws EntityNotFoundException {
-        Clinician clinician = this.clinicService.findById(id);
-        ClinicianCriteria clinicianCriteria = this.clinicService.convertToDto(clinician);
-        return ResponseEntity.ok(clinicianCriteria);
-    }
-
-    @Transactional
-    @GetMapping("filters")
-    public ResponseEntity<Collection<String>> getFiltersController() {
-        return ResponseEntity.ok(getFilters());
-    }
-
-    @Transactional
-    @GetMapping("filters/{filter_name}")
-    public ResponseEntity<Collection<ClinicianCriteria>> filter(@PathVariable(value = "filter_name") String filterName,
-            @RequestParam Map<String, String> dataQuery) throws ValidationException {
-        return ResponseEntity.ok(this.filters.get(filterName).filterTemplate(dataQuery));
-    }
+    private final MappingUtil mappingUtil;
+    private final ClinicianService clinicianService;
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<ClinicianCriteria> save(@RequestBody ClinicianCriteria dto, HttpServletRequest request)
-            throws ValidationException {
-        Long userId = dto.getUserId();
-        User user = this.clinicService.getUser(request, userId);
-        if (user != null) {
-            dto.setUser(user);
-        }
-        Clinician clinician = this.clinicService.save(dto);
-        return ResponseEntity.ok(this.clinicService.convertToDto(clinician));
-    }
-
-    @Transactional
-    @PatchMapping("/{id}")
-    public ResponseEntity<ClinicianCriteria> update(@PathVariable Long id, @RequestBody ClinicianCriteria dto)
-            throws ValidationException {
-        Clinician clinician = this.clinicService.updateAll(id, dto);
-        return ResponseEntity.ok(this.clinicService.convertToDto(clinician));
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register clinician")
+    public ResponseEntity<ClinicianDTOs.Full> register(@Nonnull @Valid @RequestBody final ClinicianData.Create data,
+            HttpServletRequest request) {
+        log.info("Received register clinician request for user : {}", data.getUserId());
+        return new ResponseEntity<>(mappingUtil.map(clinicianService.create(data, request), ClinicianDTOs.Full.class),
+                HttpStatus.CREATED);
     }
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<ClinicianCriteria> updateAll(@PathVariable Long id, @RequestBody ClinicianCriteria dto)
-            throws ValidationException {
-        Clinician clinician = this.clinicService.update(id, dto);
-        return ResponseEntity.ok(this.clinicService.convertToDto(clinician));
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit clinician")
+    public ResponseEntity<ClinicianDTOs.Full> edit(
+            @PathVariable final Long id,
+            @Nonnull @Valid @RequestBody final ClinicianData.Edit data) {
+        log.info("Received register clinician request for user : {}", id);
+        return ResponseEntity.ok(mappingUtil.map(clinicianService.edit(data, id), ClinicianDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all clinician information")
+    public ResponseEntity<List<ClinicianDTOs.Full>> getAll() {
+        log.info("Received Get all clinician information request for user : {}");
+        return ResponseEntity
+                .ok(mappingUtil.mapList(clinicianService.getAll(), ClinicianDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get clinician information")
+    public ResponseEntity<ClinicianDTOs.Full> get(
+            @PathVariable final Long id) {
+        log.info("Received get clinician information request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(clinicianService.get(id), ClinicianDTOs.Full.class));
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) throws EntityNotFoundException {
-        this.clinicService.deleteById(id);
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete clinician")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long id) {
+        log.info("Received delete clinician information request for user : {}", id);
+        clinicianService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

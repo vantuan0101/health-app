@@ -26,11 +26,7 @@ spring:
     url: jdbc:postgresql://localhost:5433/health_app
     username: postgres
     password: vantuan123
-    hikari:
-      connectionTimeout: 30000
-      idleTimeout: 600000
-      maxLifetime: 1800000
-      maximumPoolSize: 10
+
   # JPA properties
   jpa:
     hibernate:
@@ -38,5 +34,7 @@ spring:
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    open-in-view: false
-    generate-ddl: true
+
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false

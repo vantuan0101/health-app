@@ -1,14 +1,19 @@
 package com.vantuan.authmanagement.controller;
 
 import com.vantuan.authmanagement.criteria.UserCriteria;
+import com.vantuan.authmanagement.model.data.UserData;
 import com.vantuan.authmanagement.model.entity.User;
+import com.vantuan.authmanagement.read.UserDTOs;
 import com.vantuan.authmanagement.service.UserService;
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -17,57 +22,47 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "User")
 @RestController
 @RequestMapping(path = "/users")
-public class UserController extends BaseController<User, UserCriteria> {
+@RequiredArgsConstructor
+public class UserController extends BaseController<User, Long, UserCriteria> {
 
-    private UserService userService;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    // @Transactional
-    // @GetMapping()
-    // public ResponseEntity<User> findByCriteria(@RequestBody UserCriteria dto)
-    // throws EntityNotFoundException {
-    // User user = this.userService.findByEmail(dto.getEmail()).orElseThrow();
-    // return ResponseEntity.ok(user);
-    // }
+    private final MappingUtil mappingUtil;
+    private final UserService userService;
 
     @Transactional
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) throws EntityNotFoundException {
-        User user = this.userService.findById(id);
-        return ResponseEntity.ok(user);
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get User")
+    public ResponseEntity<UserDTOs.Full> findById(@PathVariable Long id) {
+        log.info("Received get user request : {}");
+        return new ResponseEntity<>(mappingUtil.map(userService.get(id), UserDTOs.Full.class), HttpStatus.OK);
+
     }
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<UserCriteria> save(@RequestBody UserCriteria dto) throws ValidationException {
-        User patient = this.userService.save(dto);
-        return ResponseEntity.ok(this.userService.convertToDto(patient));
-    }
-
-    @Transactional
-    @PatchMapping("/{id}")
-    public ResponseEntity<UserCriteria> update(@PathVariable Long id, @RequestBody UserCriteria dto)
-            throws ValidationException {
-        User patient = this.userService.update(id, dto);
-        return ResponseEntity.ok(this.userService.convertToDto(patient));
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register User")
+    public ResponseEntity<UserDTOs.Full> register(@Nonnull @Valid @RequestBody final UserData.Create data) {
+        log.info("Received register request for user : {}");
+        return new ResponseEntity<>(mappingUtil.map(userService.create(data), UserDTOs.Full.class), HttpStatus.CREATED);
     }
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<UserCriteria> updateAll(@PathVariable Long id, @RequestBody UserCriteria dto)
-            throws ValidationException {
-        User user = this.userService.updateAll(id, dto);
-        return ResponseEntity.ok(this.userService.convertToDto(user));
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update User")
+    public ResponseEntity<UserDTOs.Full> updateUser(@PathVariable Long id,
+            @Nonnull @Valid @RequestBody final UserData.Edit data) {
+        log.info("Received update request for user : {}");
+        return ResponseEntity.ok(mappingUtil.map(userService.edit(data, id), UserDTOs.Full.class));
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) throws EntityNotFoundException {
-        this.userService.deleteById(id);
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete User")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        this.userService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

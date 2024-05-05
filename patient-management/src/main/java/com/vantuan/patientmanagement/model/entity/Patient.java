@@ -1,19 +1,17 @@
 package com.vantuan.patientmanagement.model.entity;
 
-import com.vantuan.patientmanagement.common.enums.Country;
-import com.vantuan.patientmanagement.common.enums.Gender;
-import com.vantuan.patientmanagement.common.enums.Region;
-import com.vantuan.patientmanagement.common.enums.Status;
+import com.vantuan.patientmanagement.common.enums.*;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-
-import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import static org.apache.commons.lang3.StringUtils.SPACE;
 

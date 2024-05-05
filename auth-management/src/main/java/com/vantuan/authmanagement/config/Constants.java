@@ -16,14 +16,6 @@ public final class Constants {
     public static final String MESSAGE_INVALID_PASSWORD = "Invalid password.";
     public static final String MESSAGE_INVALID_MATCH_PASSWORD = "Passwords don't match.";
 
-    public static final String MESSAGE_ALL_SAVE = "All saved!";
-
-    public static final String MESSAGE_THANK_YOU_REVIEW = "Thanks for your review!";
-    public static final String MESSAGE_CANNOT_ADD_REVIEW = "Could not add review : ";
-    public static final String MESSAGE_CANNOT_EDIT_REVIEW = "Could not edit review : ";
-
-    public static final String MESSAGE_CAN_NOT_SAVE_OBJECTIVE = "Could not save new objectives";
-
     public static final int FIRST_NAME_MAX_SIZE = 150;
     public static final int LAST_NAME_MAX_SIZE = 150;
 

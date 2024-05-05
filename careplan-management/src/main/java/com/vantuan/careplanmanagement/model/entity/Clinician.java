@@ -3,7 +3,6 @@ package com.vantuan.careplanmanagement.model.entity;
 import com.vantuan.careplanmanagement.common.enums.Country;
 import com.vantuan.careplanmanagement.common.enums.Gender;
 import com.vantuan.careplanmanagement.common.enums.Region;
-import com.vantuan.careplanmanagement.common.user.model.User;
 
 import jakarta.persistence.*;
 import lombok.*;

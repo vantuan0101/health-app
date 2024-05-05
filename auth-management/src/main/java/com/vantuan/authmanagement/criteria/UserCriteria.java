@@ -1,6 +1,6 @@
 package com.vantuan.authmanagement.criteria;
 
-import com.vantuan.authmanagement.enums.UserRole;
+import com.vantuan.authmanagement.common.enums.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
