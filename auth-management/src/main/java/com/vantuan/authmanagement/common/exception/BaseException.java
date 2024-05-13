@@ -1,6 +1,6 @@
 package com.vantuan.authmanagement.common.exception;
 
-import com.vantuan.common.exception.GeneralException;
+import com.vantuan.framework.common.exception.GeneralException;
 import lombok.Getter;
 import org.slf4j.MDC;
 

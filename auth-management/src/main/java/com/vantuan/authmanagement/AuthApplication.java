@@ -1,11 +1,11 @@
 package com.vantuan.authmanagement;
 
+import com.vantuan.framework.crud.AbstractSpringBootServletInitializer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.ComponentScan;
-import com.vantuan.crud.AbstractSpringBootServletInitializer;
 import java.util.TimeZone;
 
 @SpringBootApplication

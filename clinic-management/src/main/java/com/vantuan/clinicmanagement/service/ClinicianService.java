@@ -7,9 +7,9 @@ import com.vantuan.clinicmanagement.model.data.ClinicianData;
 import com.vantuan.clinicmanagement.model.entity.Clinician;
 import com.vantuan.clinicmanagement.model.entity.User;
 import com.vantuan.clinicmanagement.repository.ClinicianDAO;
-import com.vantuan.common.mapper.MappingUtil;
-import com.vantuan.crud.service.BaseService;
 
+import com.vantuan.framework.common.mapper.MappingUtil;
+import com.vantuan.framework.crud.service.BaseService;
 import io.vavr.control.Try;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;

@@ -1,7 +1,7 @@
 package com.vantuan.patientmanagement.service;
 
-import com.vantuan.common.mapper.MappingUtil;
-import com.vantuan.crud.service.BaseService;
+import com.vantuan.framework.common.mapper.MappingUtil;
+import com.vantuan.framework.crud.service.BaseService;
 import com.vantuan.patientmanagement.common.exceptions.ResourceNotCreatedException;
 import com.vantuan.patientmanagement.common.exceptions.ResourceNotUpdatedException;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;

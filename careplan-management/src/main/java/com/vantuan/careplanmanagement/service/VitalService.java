@@ -7,9 +7,8 @@ import com.vantuan.careplanmanagement.model.data.VitalData;
 import com.vantuan.careplanmanagement.model.entity.Patient;
 import com.vantuan.careplanmanagement.model.entity.Vital;
 import com.vantuan.careplanmanagement.repository.VitalDAO;
-import com.vantuan.common.mapper.MappingUtil;
-
-import com.vantuan.crud.service.BaseService;
+import com.vantuan.framework.common.mapper.MappingUtil;
+import com.vantuan.framework.crud.service.BaseService;
 import io.vavr.control.Try;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
