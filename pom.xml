@@ -47,9 +47,13 @@
 	</dependencyManagement>
 
 	<repositories>
+<!--		<repository>-->
+<!--			<id>framework</id>-->
+<!--			<url>https://raw.github.com/vantuan0101/repo/main/</url>-->
+<!--		</repository>-->
 		<repository>
-			<id>framework</id>
-			<url>https://raw.github.com/vantuan0101/repo/main/</url>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/vantuan0101/repo</url>
 		</repository>
 	</repositories>
 
