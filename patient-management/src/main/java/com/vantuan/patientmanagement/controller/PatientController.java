@@ -1,7 +1,7 @@
 package com.vantuan.patientmanagement.controller;
 
-import com.vantuan.common.mapper.MappingUtil;
-import com.vantuan.crud.controller.BaseController;
+import com.vantuan.framework.common.mapper.MappingUtil;
+import com.vantuan.framework.crud.controller.BaseController;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;
 import com.vantuan.patientmanagement.model.data.PatientData;
 import com.vantuan.patientmanagement.model.entity.Patient;

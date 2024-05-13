@@ -46,4 +46,11 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<repositories>
+		<repository>
+			<id>framework</id>
+			<url>https://raw.github.com/vantuan0101/repo/main/</url>
+		</repository>
+	</repositories>
+
 </project>

@@ -5,9 +5,9 @@ import com.vantuan.clinicmanagement.model.data.ClinicianData;
 import com.vantuan.clinicmanagement.model.entity.Clinician;
 import com.vantuan.clinicmanagement.read.ClinicianDTOs;
 import com.vantuan.clinicmanagement.service.ClinicianService;
-import com.vantuan.common.mapper.MappingUtil;
-import com.vantuan.crud.controller.BaseController;
 
+import com.vantuan.framework.common.mapper.MappingUtil;
+import com.vantuan.framework.crud.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Nonnull;

@@ -1,9 +1,9 @@
 package com.vantuan.clinicmanagement.common.exception;
 
+import com.vantuan.framework.common.exception.GeneralException;
 import lombok.Getter;
 import org.slf4j.MDC;
 
-import com.vantuan.common.exception.GeneralException;
 
 @Getter
 public class BaseException extends GeneralException {

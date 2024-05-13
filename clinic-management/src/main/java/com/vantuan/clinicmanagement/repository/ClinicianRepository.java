@@ -1,7 +1,7 @@
 package com.vantuan.clinicmanagement.repository;
 
 import com.vantuan.clinicmanagement.model.entity.Clinician;
-import com.vantuan.crud.respository.BaseRepository;
+import com.vantuan.framework.crud.respository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
