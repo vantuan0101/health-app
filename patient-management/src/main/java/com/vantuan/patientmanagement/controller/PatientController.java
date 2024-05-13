@@ -1,92 +1,86 @@
 package com.vantuan.patientmanagement.controller;
 
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
-import com.vantuan.patientmanagement.common.user.model.User;
 import com.vantuan.patientmanagement.criteria.PatientCriteria;
+import com.vantuan.patientmanagement.model.data.PatientData;
 import com.vantuan.patientmanagement.model.entity.Patient;
+import com.vantuan.patientmanagement.read.PatientDTOs;
 import com.vantuan.patientmanagement.service.PatientService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Patient")
 @RestController
 @RequestMapping(path = "/patient")
 @RequiredArgsConstructor
-public class PatientController extends BaseController<Patient, PatientCriteria> {
-
-    private PatientService patientService;
-
-    @Autowired
-    public PatientController(PatientService patientService) {
-        this.patientService = patientService;
-    }
-
-    @Transactional
-    @GetMapping("/{id}")
-    public ResponseEntity<PatientCriteria> findById(@PathVariable Long id) throws EntityNotFoundException {
-        Patient patient = this.patientService.findById(id);
-        PatientCriteria patientCriteria = this.patientService.convertToDto(patient);
-        return ResponseEntity.ok(patientCriteria);
-    }
-
-    @Transactional
-    @GetMapping("filters")
-    public ResponseEntity<Collection<String>> getFiltersController() {
-        return ResponseEntity.ok(getFilters());
-    }
-
-    @Transactional
-    @GetMapping("filters/{filter_name}")
-    public ResponseEntity<Collection<PatientCriteria>> filter(@PathVariable(value = "filter_name") String filterName,
-            @RequestParam Map<String, String> dataQuery) throws ValidationException {
-        return ResponseEntity.ok(this.filters.get(filterName).filterTemplate(dataQuery));
-    }
+public class PatientController extends BaseController<Patient, Long, PatientCriteria> {
+    private final MappingUtil mappingUtil;
+    private final PatientService patientService;
 
     @Transactional
     @PostMapping()
-    public ResponseEntity<PatientCriteria> save(@RequestBody PatientCriteria dto, HttpServletRequest request)
-            throws ValidationException {
-        String email = dto.getEmail();
-        User user = this.patientService.getUserEmail(request, email);
-        if (user != null) {
-            dto.setUser(user);
-        }
-        Patient patient = this.patientService.save(dto);
-        return ResponseEntity.ok(this.patientService.convertToDto(patient));
-    }
-
-    @Transactional
-    @PatchMapping("/{id}")
-    public ResponseEntity<PatientCriteria> update(@PathVariable Long id, @RequestBody PatientCriteria dto)
-            throws ValidationException {
-        Patient patient = this.patientService.update(id, dto);
-        return ResponseEntity.ok(this.patientService.convertToDto(patient));
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Register patient")
+    public ResponseEntity<PatientDTOs.Full> register(@Nonnull @Valid @RequestBody final PatientData.Create data,
+            HttpServletRequest request) {
+        log.info("Received register patient request for user : {}", data.getClinicianId());
+        return new ResponseEntity<>(mappingUtil.map(patientService.create(data, request), PatientDTOs.Full.class),
+                HttpStatus.CREATED);
     }
 
     @Transactional
     @PutMapping("/{id}")
-    public ResponseEntity<PatientCriteria> updateAll(@PathVariable Long id, @RequestBody PatientCriteria dto)
-            throws ValidationException {
-        Patient patient = this.patientService.updateAll(id, dto);
-        return ResponseEntity.ok(this.patientService.convertToDto(patient));
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit patient")
+    public ResponseEntity<PatientDTOs.Full> edit(
+            @PathVariable final Long id,
+            @Nonnull @Valid @RequestBody final PatientData.Edit data) {
+        log.info("Received register patient request for user : {}", id);
+        return ResponseEntity.ok(mappingUtil.map(patientService.edit(data, id), PatientDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all patient information")
+    public ResponseEntity<List<PatientDTOs.Full>> getAll() {
+        log.info("Received Get all clinician information request for user : {}");
+        return ResponseEntity
+                .ok(mappingUtil.mapList(patientService.getAll(), PatientDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get patient information")
+    public ResponseEntity<PatientDTOs.Full> get(
+            @PathVariable final Long id) {
+        log.info("Received get patient information request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(patientService.get(id), PatientDTOs.Full.class));
     }
 
     @Transactional
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) throws EntityNotFoundException {
-        this.patientService.deleteById(id);
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete patient")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long id) {
+        log.info("Received delete patient information request for user : {}", id);
+        patientService.delete(id);
         return ResponseEntity.ok().build();
     }
 }

@@ -72,6 +72,9 @@ public final class VitalData {
     @SuperBuilder(toBuilder = true)
     @NoArgsConstructor
     public static class Create extends Base {
+
+        private String patientId;
+
         @JsonIgnore
         private Patient patient;
     }

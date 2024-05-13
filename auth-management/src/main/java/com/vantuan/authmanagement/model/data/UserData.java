@@ -14,14 +14,9 @@ public final class UserData {
     @SuperBuilder(toBuilder = true)
     @NoArgsConstructor
     public abstract static class Base {
-        @NotNull
-        private String email;
+        private String firstName;
 
-        @NotNull
-        private String password;
-
-        @NotNull
-        private String confirmPass;
+        private String lastName;
     }
 
     @Getter
@@ -36,6 +31,14 @@ public final class UserData {
     @SuperBuilder(toBuilder = true)
     @NoArgsConstructor
     public static class Create extends Base {
+        @NotNull
+        private String email;
+
+        @NotNull
+        private String password;
+
+        @NotNull
+        private String confirmPass;
 
     }
 }

@@ -1,6 +1,5 @@
 package com.vantuan.clinicmanagement.model.entity;
 
-import com.vantuan.clinicmanagement.common.address.model.entity.UserAddress;
 import com.vantuan.clinicmanagement.common.enums.*;
 import jakarta.persistence.*;
 
@@ -50,17 +49,22 @@ public class Patient {
     @NotNull
     private LocalDate birthDate;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_user_address")
-    private UserAddress userAddress;
+    private String address;
+
+    private String city;
+
+    @Enumerated(EnumType.STRING)
+    private Country country;
+
+    private String zipCode;
+
+    @Enumerated(EnumType.STRING)
+    private Region region;
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_clinician")
     private Clinician clinician;
-
-    @NotNull
-    private Country country;
 
     @NotNull
     @Enumerated(EnumType.STRING)

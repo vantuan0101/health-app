@@ -1,8 +1,8 @@
 package com.vantuan.clinicmanagement.read;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.vantuan.clinicmanagement.common.address.read.UserAddressDTOs;
-import com.vantuan.clinicmanagement.common.enums.*;
+import com.vantuan.clinicmanagement.common.enums.Country;
+import com.vantuan.clinicmanagement.common.enums.Gender;
+import com.vantuan.clinicmanagement.common.enums.Region;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +10,16 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-
 @NoArgsConstructor
 public final class ClinicianDTOs {
 
     @Getter
     @Setter
     abstract static class Base {
+
+        private Long id;
+
+        private Boolean isVerified;
 
         private Boolean active;
 
@@ -27,7 +29,15 @@ public final class ClinicianDTOs {
         @Schema(example = "Kowalski")
         private String lastName;
 
-        private Boolean isVerified;
+        private String address;
+
+        private String city;
+
+        private Country country;
+
+        private String zipCode;
+
+        private Region region;
 
         private Gender gender;
 
@@ -38,8 +48,14 @@ public final class ClinicianDTOs {
     @Getter
     @Setter
     public static class Full extends Base {
-        @JsonInclude(NON_EMPTY)
-        private UserAddressDTOs.Full userAddress;
+
+        private Country countryOfLicense;
+
+        private Region stateOfPrimaryLicense;
+
+        @Schema(example = "35007")
+        private String licenseNumber;
+
     }
 
     @Getter

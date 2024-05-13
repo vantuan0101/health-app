@@ -29,9 +29,16 @@ public class UserDetailsImplement implements UserDetails {
         return user.getId();
     }
 
-
     public String getEmail() {
         return user.getEmail();
+    }
+
+    public String getFirstName() {
+        return user.getFirstName();
+    }
+
+    public String getLastName() {
+        return user.getLastName();
     }
 
     @Override
@@ -71,4 +78,3 @@ public class UserDetailsImplement implements UserDetails {
     }
 
 }
-

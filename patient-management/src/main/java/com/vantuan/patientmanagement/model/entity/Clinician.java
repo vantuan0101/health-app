@@ -1,17 +1,19 @@
 package com.vantuan.patientmanagement.model.entity;
 
-import com.vantuan.patientmanagement.common.address.model.entity.UserAddress;
-import com.vantuan.patientmanagement.common.enums.Country;
-import com.vantuan.patientmanagement.common.enums.Gender;
-import com.vantuan.patientmanagement.common.enums.Region;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.vantuan.patientmanagement.common.enums.*;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import java.util.List;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.SPACE;
 
@@ -45,19 +47,12 @@ public class Clinician {
     @Size(max = LAST_NAME_MAX_SIZE)
     private String lastName;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id_user_address")
-    private UserAddress userAddress;
-
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Country countryOfLicense;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     private Region stateOfPrimaryLicense;
 
-    @NotNull
     private String licenseNumber;
 
     @NotNull
@@ -67,8 +62,24 @@ public class Clinician {
     @NotNull
     private LocalDate birthDate;
 
+    private String address;
+
+    private String city;
+
+    private Country country;
+
+    private String zipCode;
+
+    private Region region;
+
     @OneToMany(mappedBy = "clinician")
     private List<Patient> patients;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonBackReference
+    private User user;
 
     public String getFullName() {
         return firstName + SPACE + lastName;

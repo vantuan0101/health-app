@@ -5,5 +5,5 @@ import com.vantuan.crud.respository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AllergyRepository extends BaseRepository<Allergy> {
+public interface AllergyRepository extends BaseRepository<Allergy, Long> {
 }

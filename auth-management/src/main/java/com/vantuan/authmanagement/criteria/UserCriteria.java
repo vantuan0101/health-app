@@ -1,6 +1,6 @@
 package com.vantuan.authmanagement.criteria;
 
-import com.vantuan.authmanagement.enums.UserRole;
+import com.vantuan.authmanagement.common.enums.UserRole;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public class UserCriteria {
     private String email;
+    private String firstName;
+    private String lastName;
     private String password;
     private String confirmPass;
     private UserRole userRole;

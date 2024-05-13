@@ -1,101 +1,88 @@
 package com.vantuan.careplanmanagement.controller;
 
 import com.vantuan.careplanmanagement.criteria.MedicationCriteria;
+import com.vantuan.careplanmanagement.model.data.MedicationData;
 import com.vantuan.careplanmanagement.model.entity.Medication;
-import com.vantuan.careplanmanagement.model.entity.Patient;
+import com.vantuan.careplanmanagement.read.MedicationDTOs;
 import com.vantuan.careplanmanagement.service.MedicationService;
-import com.vantuan.common.exception.BadRequestException;
-import com.vantuan.common.exception.EntityNotFoundException;
-import com.vantuan.common.exception.ValidationException;
+import com.vantuan.common.mapper.MappingUtil;
 import com.vantuan.crud.controller.BaseController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Nonnull;
-import javax.validation.Valid;
-
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import java.util.List;
 
 @Slf4j
 @Tag(name = "Patient medications")
 @RestController
-@RequestMapping("/careplan")
+@RequestMapping("/careplan/medications")
 @RequiredArgsConstructor
-public class MedicationController extends BaseController<Medication, MedicationCriteria> {
+public class MedicationController extends BaseController<Medication, Long, MedicationCriteria> {
 
-    private MedicationService medicationService;
+    private final MappingUtil mappingUtil;
+    private final MedicationService medicationService;
 
-    @Autowired
-    public void setMedicationService(MedicationService medicationService) {
-        this.medicationService = medicationService;
+    @Transactional
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create medications")
+    public ResponseEntity<MedicationDTOs.Full> create(@Nonnull @Valid @RequestBody final MedicationData.Create data,
+            HttpServletRequest request) {
+        log.info("Received register medications request for user : {}", data.getPatientId());
+        return new ResponseEntity<>(mappingUtil.map(medicationService.create(data, request), MedicationDTOs.Full.class),
+                HttpStatus.CREATED);
     }
 
     @Transactional
-    @PostMapping("/medications")
-    @ResponseStatus(CREATED)
-    @Operation(summary = "Add medications to patient")
-    public ResponseEntity<MedicationCriteria> addMedications(@Nonnull @PathVariable Long patientId,
-            @Nonnull @RequestBody MedicationCriteria data, HttpServletRequest request) throws ValidationException {
-        log.info("Received add medications to patient request for user : {}");
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Edit medications")
+    public ResponseEntity<MedicationDTOs.Full> edit(
+            @PathVariable final Long id,
+            @Nonnull @Valid @RequestBody final MedicationData.Edit data) {
+        log.info("Received register medications request for user : {}", id);
+        return ResponseEntity.ok(mappingUtil.map(medicationService.edit(data, id), MedicationDTOs.Full.class));
+    }
 
-        Patient patient = this.medicationService.getPatient(request, patientId);
-        data.setPatient(patient);
-        Medication newData = this.medicationService.save(data);
-        return ResponseEntity.ok(this.medicationService.convertToDto(newData));
+    @Transactional(readOnly = true)
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all medications information")
+    public ResponseEntity<List<MedicationDTOs.Full>> getAll() {
+        log.info("Received Get all medications information request for user : {}");
+        return ResponseEntity
+                .ok(mappingUtil.mapList(medicationService.getAll(), MedicationDTOs.Full.class));
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get medications information")
+    public ResponseEntity<MedicationDTOs.Full> get(
+            @PathVariable final Long id) {
+        log.info("Received get medications information request for user : {}", id);
+        return ResponseEntity
+                .ok(mappingUtil.map(medicationService.get(id), MedicationDTOs.Full.class));
     }
 
     @Transactional
-    @PutMapping("/medications")
-    @ResponseStatus(OK)
-    @Operation(summary = "Edit patient medication")
-    public ResponseEntity<MedicationCriteria> editMedication(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final MedicationCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException, ValidationException {
-        log.info("Received edit patient medication request for user : {}");
-        Patient patient = this.medicationService.getPatient(request, patientId);
-        Medication medication = this.medicationService.findById(data.getId());
-        if (medication.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Edit patient medication id not match with patient");
-        Medication newData = updateData(medication, data);
-        Medication newMedication = this.medicationService.saveByModel(newData);
-        return ResponseEntity.ok(this.medicationService.convertToDto(newMedication));
-    }
-
-    private Medication updateData(final Medication medication, final MedicationCriteria data) {
-        return medication.toBuilder()
-                .medicineName(data.getMedicineName())
-                .quantity(data.getQuantity())
-                .unit(data.getUnit())
-                .startDate(data.getStartDate())
-                .estimatedEndDate(data.getEstimatedEndDate())
-                .doseUnit(data.getDoseUnit())
-                .frequency(data.getFrequency())
-                .notes(data.getNotes())
-                .build();
-    }
-
-    @Transactional
-    @DeleteMapping("/medications")
-    public ResponseEntity<String> removeVital(@Nonnull @PathVariable final Long patientId,
-            @Nonnull @Valid @RequestBody final MedicationCriteria data,
-            HttpServletRequest request) throws EntityNotFoundException {
-        log.info("Received remove patient medication from patient request for user : {}");
-        Patient patient = this.medicationService.getPatient(request, patientId);
-        Medication medication = this.medicationService.findById(data.getId());
-        if (medication.getPatient().getId() != patient.getId())
-            throw new BadRequestException("Remove patient medication id not match with patient");
-
-        Long medicationId = medication.getId();
-        this.medicationService.deleteById(medicationId);
-        return ResponseEntity.ok("Delete Ok");
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Delete medications")
+    public ResponseEntity<Void> delete(
+            @PathVariable final Long id) {
+        log.info("Received delete medications information request for user : {}", id);
+        medicationService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 }

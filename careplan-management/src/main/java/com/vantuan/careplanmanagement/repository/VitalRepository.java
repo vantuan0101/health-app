@@ -5,5 +5,5 @@ import com.vantuan.crud.respository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface VitalRepository extends BaseRepository<Vital> {
+public interface VitalRepository extends BaseRepository<Vital, Long> {
 }

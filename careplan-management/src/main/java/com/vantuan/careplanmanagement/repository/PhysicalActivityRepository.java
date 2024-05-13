@@ -5,5 +5,5 @@ import com.vantuan.crud.respository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PhysicalActivityRepository extends BaseRepository<PhysicalActivity> {
+public interface PhysicalActivityRepository extends BaseRepository<PhysicalActivity, Long> {
 }

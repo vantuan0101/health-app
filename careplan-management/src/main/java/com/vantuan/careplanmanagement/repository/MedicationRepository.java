@@ -5,5 +5,5 @@ import com.vantuan.crud.respository.BaseRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MedicationRepository extends BaseRepository<Medication> {
+public interface MedicationRepository extends BaseRepository<Medication, Long> {
 }
