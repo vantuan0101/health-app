@@ -50,3 +50,4 @@ Thumbs.db
 
 **/application-default.yml
 **/logback-default.xml
+.DS_Store
